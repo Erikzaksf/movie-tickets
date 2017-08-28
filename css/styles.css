@@ -19,11 +19,15 @@ body {
   background-repeat: no-repeat;
   margin: 0 !important;
 }
-
-.wrapper {
+#signLogBtn {
+  text-align: right;
+}
+#signLogBtn button{
 
 }
+#signLogBtn button:hover{
 
+}
 
 .content {
 

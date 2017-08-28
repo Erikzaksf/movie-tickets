@@ -1,6 +1,23 @@
 $(document).ready(function() {
   $('body').css('height' , $(window).innerHeight());
   $('.wrapper').css('height' , $('body').height()- $('.jumbotron').innerHeight());
+
+  $('#signLogBtn').click(function(){
+    if(this.textContent.trim() == "SignUp"){
+      $('#signUp').removeClass('hide');
+      $('#logIn').addClass('hide');
+      $(this).text('SignIn');
+    }else if(this.textContent.trim() == "SignIn"){
+      $('#signUp').addClass('hide');
+      $('#logIn').removeClass('hide');
+      $(this).text('SignUp');
+    }
+
+  });
+
+
+
+
 })
 
 
@@ -26,6 +43,6 @@ $(document).ready(function(){
     event.preventDefault();
     debugger
     //var newUser = new credentials( $('#newName').val(), $('#newPassword').val() , $('#userType').val());
-    localStorage.setItem('.name', JSON.stringify(name));
+    localStorage.setItem('name', JSON.stringify(name));
   });
 });
