@@ -4,7 +4,14 @@ $(document).ready(function() {
 })
 
 
-var retrievedcredentials = [];
+var newUser = [];
+
+function credentials(name, password, userType) {
+  this.name = name;
+  this.password = password;
+  this.userType = userType;
+}
+
 var credentials = {
   username: "",
   password: "",
@@ -17,8 +24,8 @@ localStorage.setItem('credentials', JSON.stringify(credentials));
 $(document).ready(function(){
   $("form#signUp").submit(function(event){
     event.preventDefault();
-    var name = $('#newName').val();
-    var password = $('#newPassword').val();
-    var userType = $('#userType').val();
+    debugger
+    //var newUser = new credentials( $('#newName').val(), $('#newPassword').val() , $('#userType').val());
+    localStorage.setItem('.name', JSON.stringify(name));
   });
 });
