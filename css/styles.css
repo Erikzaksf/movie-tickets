@@ -1,6 +1,11 @@
 body {
   position: relative;
 }
+
+.hide {
+  display: none;
+}
+
 .app-logo {
   position: fixed;
   top: 0;
@@ -14,17 +19,39 @@ body {
 }
 .jumbotron {
   background-image: url(../img/dunkirkBanner.jpg);
-  height: 30rem;
+  height: 30%;
   background-size: cover;
   background-repeat: no-repeat;
   margin: 0 !important;
 }
-
-.wrapper {
-
+.notification {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  background: rgba(8, 8, 8, 0.37);
 }
-
-
-.content {
-
+.notification-wrapper {
+  height: 30%;
+  width: 40%;
+  top: 35%;
+  position: absolute;
+  left: 30%;
+  background: #e6ecec;
+  border: 1px solid #7b7b7b;
+  border-radius: 1rem;
+  padding: 4rem;
+  z-index: 99;
+}
+.notification-wrapper p{
+  height: 70%;
+  font-size: 2.5rem;
+  text-align: center;
+  padding: 2rem;
+}
+.notification-wrapper button{
+  height: 3rem;
+  width: 6rem;
+  border-radius: 1rem;
+  border-color: #909090;
+  margin-left: 40%;
 }
