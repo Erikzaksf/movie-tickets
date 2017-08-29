@@ -1,5 +1,17 @@
 $(document).ready(function() {
   /*
+
+  */
+  // $.ajax({
+  //      url: 'logIn.html',
+  //      type: 'GET',
+  //      dataType: 'html',
+  //      success: function(data){
+  //        $('.container').html(data);
+  //      }
+  //  });
+  $(".container").load("logIn.html .logInPageWrapper");
+  /*
     Declaring variable
   */
   //localStorage.clear();
@@ -39,6 +51,20 @@ $(document).ready(function() {
   var gettingData = function(name){
     console.log(JSON.parse(localStorage.getItem(name)));
     return JSON.parse(localStorage.getItem(name))
+  }
+  /*
+    userCredential construtor
+  */
+  function Credential (){
+    this.credentialData = [];
+  }
+
+   /*
+    CredentialInfo constructor
+  */
+  function CredentialInfo (name, password){
+    this.userName = name;
+    this.password = password;
   }
 
   /*
@@ -168,8 +194,83 @@ $(".add-info").click(function(e){
                       '</div>'+
                       '</div>'
                     );
-});
+  });
 
+/*
+  On click create an account button show signup page
+*/
+$('.createAccountBtn').click(function(){
+  $('.page-title').text('Create an account');
+  $('.signin-btns').removeClass('hide');
+  $('.confirm-password').removeClass('hide');
+  $('.login-btns').addClass('hide');
+  $('input').val("");
+
+})
+
+/*
+  On click already a user button show login page
+*/
+$('.login-page-btn').click(function(){
+  $('.page-title').text('LogIn to Book My Show');
+  $('.signin-btns').addClass('hide');
+  $('.confirm-password').addClass('hide');
+  $('.login-btns').removeClass('hide');
+  $('input').val("");
+
+})
+
+/*
+  On click signup store credential
+*/
+
+$('.signUp').click(function(e){
+  e.preventDefault();
+  var userName = $('#usrName').val().trim();
+  var password = $('#password').val().trim();
+  var confirmPassword = $('#confirm-password').val().trim();
+  var infoObject = new CredentialInfo(userName, confirmPassword);
+  var credential = new Credential();
+  if(userName && password && password === confirmPassword){
+    credential.credentialData.push(infoObject);
+    var localStorageData = gettingData("credential");
+    if(!localStorageData){
+      storingData('credential', credential.credentialData);
+    }else{
+      localStorageData.push(infoObject);
+      storingData('credential', localStorageData);
+    }
+    alert(`Congratulation '${userName}', Account got created`);
+  }else{
+    alert('warning');
+ }
+
+})
+
+/*
+  On click login if credential match send it to home page
+*/
+$('.logIn').click(function(e){
+  e.preventDefault();
+  var userName = $('#usrName').val().trim();
+  var password = $('#password').val().trim();
+  if(userName && password){
+      var localstorageData = gettingData('credential');
+      localstorageData.reduce(function(arr,data,index){
+        if(userName == data.userName){
+          localstorageData.splice(index, 1);
+          storingData('credential',localstorageData);
+          alert('home');
+          }else{
+          alert(`credential not found Please signup`);
+        }
+      },[])
+    }
+  else{
+    alert('warning');
+  }
+  
+})
 
 
 

@@ -55,3 +55,47 @@ body {
   border-color: #909090;
   margin-left: 40%;
 }
+.logInPageWrapper {
+    text-align: center;
+    margin: 5rem;
+    font-size: 2rem;
+    background: #e8e8e8;
+    padding: 5rem;
+    border: 1px solid #ccc;
+}
+.logInPageWrapper button{
+    font-size: 2rem;
+    width: 40%;
+    height: 5rem;
+    border-radius: 1rem;
+}
+.logInPageWrapper input{
+    text-align: left;
+    width: 40%;
+    margin-left: 30%;
+    height: 5rem;
+    border-radius: 1rem;
+    border: 1px solid #bdbcbc;
+    background: #f1f1f1;
+    font-size: 2rem;
+}
+.createAccountBtn, .login-page-btn {
+    font-size: 1.5rem !important;
+    width: 30% !important;
+}
+hr {
+  border-top: 1px dashed #949494;
+}
+.page-title{
+    color: #585656;
+    padding-bottom: 2rem;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
