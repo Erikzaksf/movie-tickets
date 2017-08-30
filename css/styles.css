@@ -215,7 +215,7 @@ hr {
   position: absolute;
   width: 60%;
   top: 10%;
-  height: 75%;
+  height: 85%;
   left: 20%;
   background: #fff;
   border: 3px solid #20aab1;
@@ -224,18 +224,45 @@ hr {
   text-align: center;
 }
 
-.notification-seat-wrapper i img{
+.notification-seat-wrapper i img {
   width: 7rem;
   text-align: center;
   margin-top: 5%;
 }
 
-.screen {
-  margin-top: 5%;
+.theaterScreen {
+  margin-top: 15%;
   width: 60%;
-  height: 10%;
-  line-height: 26px;
+  height: 8%;
+  line-height: 35px;
   margin-left: 20%;
   background-color: #20aab1;
   color: white;
+}
+
+.seatingPrice {
+  margin-bottom: 15%;
+  font-size: 15px;
+}
+
+.selectProceed {
+  margin-top: 20%;
+  border-radius: 5px
+}
+
+.totalCost-wrapper {
+  margin-top: 30%;
+  line-height: 3rem;
+  font-size: 2rem;
+}
+
+.confirmCost {
+  margin-top: 30%;
+  border-radius: 5px;
+}
+
+.congrats {
+  margin-top: 30%;
+  font-size: 2rem;
+  line-height: 3rem;
 }

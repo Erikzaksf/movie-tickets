@@ -10,7 +10,7 @@ $(document).ready(function() {
   //        $('.container').html(data);
   //      }
   //  });
-  //$(".container").load("logIn.html .logInPageWrapper");
+  //$(".container").load("logIn.html");
   /*
     Declaring variable
   */
@@ -343,22 +343,67 @@ $(document).ready(function() {
             $('.movieTime li').on('click',function(){
               $('.wrapper').append('<div class="notification seat hide">' +
                                 '<div class="notification-seat-wrapper">' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
-                                  '<div class="screen col-sm-12">All Eyes This Way Please</div>' +
+                                  '<div class="selected-seats-proceed-wrapper">' +
+                                    '<div class = "seatingPrice">Gold Member: $12 per seat</div>' +
+                                      '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                      '<i class="col-sm-4 "><img src="img/seat.png"></i>' +
+                                      '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                      '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                      '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                    '<div class="theaterScreen col-sm-12">All Eyes This Way Please</div>' +
+                                    '<div class="col-sm-12">' +
+                                      '<button class="selectProceed">Proceed</button>' +
+                                    '</div>' +
+                                  '</div>' +
+                                  '<div class="totalCost-wrapper"></div>' +
+                                  '<button class="confirmCost">Confirm</button>' +
+                                  '<div class="congrats">Congratulation. Your ticket(s) have been processed. Thank you for your purchase.</div>' +
                                 '</div>' +
                               '</div>')
               $('.wrapper .notification').removeClass('hide');
-              $('.notification-seat-wrapper img').on('click', function(){
+              $('.totalCost-wrapper').addClass('hide');
+              $('.selectProceed').addClass('hide');
+              $('.confirmCost').addClass('hide');
+              $('.congrats').addClass('hide');
+              var selectedSeats = $('.notification-seat-wrapper img').on('click', function(){
                 if($(this).attr("src") == "img/selectedSeat.png"){
                     $(this).attr("src", "img/seat.png");
+                    $('.selectProceed').addClass('hide');
                 } else {
-                $(this).attr("src", "img/selectedSeat.png");
+                  $(this).attr("src", "img/selectedSeat.png");
+                  $('.selectProceed').removeClass('hide');
                 }
               });
+
+              $('.selectProceed').on('click',function(){
+                var seatNo = 0;
+                var seatCost = 12;
+                $('.selected-seats-proceed-wrapper').addClass('hide');
+                $('.confirmCost').removeClass('hide');
+                $('.totalCost-wrapper').removeClass('hide');
+
+                // querySelectorAll gives total number of 'img' items and assign value to totalSeats
+                // totalSeats is 5 total
+                var totalSeats = document.querySelectorAll(".selected-seats-proceed-wrapper img");
+
+                // for each of totalSeats, if a seat is selected (selectedSeat.png), add 1 to seatNo
+                // loop through all 5 seats to total selected seats; SeatNo will equal # of seats selected by user
+                totalSeats.forEach(function(seat){
+                  if($(seat).attr("src") == "img/selectedSeat.png"){
+                    seatNo +=1;
+                  }
+                })
+                var totalCost = seatCost * seatNo;
+                $('.totalCost-wrapper').text("This is your total: $" + totalCost);
+              })
+
+              $('.confirmCost').on('click', function(){
+                $('.totalCost-wrapper').addClass('hide');
+                $('.confirmCost').addClass('hide');
+                $('.congrats').removeClass('hide');
+
+
+              })
             })
           }
       },[])
