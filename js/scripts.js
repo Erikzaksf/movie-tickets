@@ -10,7 +10,7 @@ $(document).ready(function() {
   //        $('.container').html(data);
   //      }
   //  });
-  $(".container").load("logIn.html .logInPageWrapper");
+  //$(".container").load("logIn.html .logInPageWrapper");
   /*
     Declaring variable
   */
@@ -119,30 +119,30 @@ $(document).ready(function() {
     On add information button in admin page
     save all data in object
   */
-$(".add-info").click(function(e){
-  e.preventDefault();
-  var movieName = $('#movie-info').val();
-  var MovieDetail = new MovieInfo (movieName);
-  var movieObject = []
-    $('.theater-form').each(function() {
-      var timingArray =[];
-      var theaterName;
-      theaterName = $(this).find('#theater').val();
-      $(this).find('.timing-checkbox:checked').each(function(){
-        timingArray.push(this.value);
+  $(".add-info").click(function(e){
+    e.preventDefault();
+    var movieName = $('#movie-info').val();
+    var MovieDetail = new MovieInfo (movieName);
+    var movieObject = []
+      $('.theater-form').each(function() {
+        var timingArray =[];
+        var theaterName;
+        theaterName = $(this).find('#theater').val();
+        $(this).find('.timing-checkbox:checked').each(function(){
+          timingArray.push(this.value);
+        });
+        var MovieTimingInfo = new MovieTimings(theaterName,timingArray)
+        MovieDetail.movieDetails.push(MovieTimingInfo)
       });
-      var MovieTimingInfo = new MovieTimings(theaterName,timingArray)
-      MovieDetail.movieDetails.push(MovieTimingInfo)
-    });
-    movieObject.push(MovieDetail);
-    var localStorageData = gettingData("movie");
-    if(!localStorageData){
-      storingData("movie", movieObject);
-    }else{
-      localStorageData.push(MovieDetail);
-      storingData("movie", localStorageData);
-    }
-    notification(`Movie name '${movieName}' got added`);
+      movieObject.push(MovieDetail);
+      var localStorageData = gettingData("movie");
+      if(!localStorageData){
+        storingData("movie", movieObject);
+      }else{
+        localStorageData.push(MovieDetail);
+        storingData("movie", localStorageData);
+      }
+      notification(`Movie name '${movieName}' got added`);
   });
 
 
@@ -196,81 +196,175 @@ $(".add-info").click(function(e){
                     );
   });
 
-/*
-  On click create an account button show signup page
-*/
-$('.createAccountBtn').click(function(){
-  $('.page-title').text('Create an account');
-  $('.signin-btns').removeClass('hide');
-  $('.confirm-password').removeClass('hide');
-  $('.login-btns').addClass('hide');
-  $('input').val("");
+  /*
+    On click create an account button show signup page
+  */
+  $('.createAccountBtn').click(function(){
+    $('.page-title').text('Create an account');
+    $('.signin-btns').removeClass('hide');
+    $('.confirm-password').removeClass('hide');
+    $('.login-btns').addClass('hide');
+    $('input').val("");
 
-})
+  })
 
-/*
-  On click already a user button show login page
-*/
-$('.login-page-btn').click(function(){
-  $('.page-title').text('LogIn to Book My Show');
-  $('.signin-btns').addClass('hide');
-  $('.confirm-password').addClass('hide');
-  $('.login-btns').removeClass('hide');
-  $('input').val("");
+  /*
+    On click already a user button show login page
+  */
+  $('.login-page-btn').click(function(){
+    $('.page-title').text('LogIn to Book My Show');
+    $('.signin-btns').addClass('hide');
+    $('.confirm-password').addClass('hide');
+    $('.login-btns').removeClass('hide');
+    $('input').val("");
 
-})
+  })
 
-/*
-  On click signup store credential
-*/
+  /*
+    On click signup store credential
+  */
 
-$('.signUp').click(function(e){
-  e.preventDefault();
-  var userName = $('#usrName').val().trim();
-  var password = $('#password').val().trim();
-  var confirmPassword = $('#confirm-password').val().trim();
-  var infoObject = new CredentialInfo(userName, confirmPassword);
-  var credential = new Credential();
-  if(userName && password && password === confirmPassword){
-    credential.credentialData.push(infoObject);
-    var localStorageData = gettingData("credential");
-    if(!localStorageData){
-      storingData('credential', credential.credentialData);
+  $('.signUp').click(function(e){
+    e.preventDefault();
+    var userName = $('#usrName').val().trim();
+    var password = $('#password').val().trim();
+    var confirmPassword = $('#confirm-password').val().trim();
+    var infoObject = new CredentialInfo(userName, confirmPassword);
+    var credential = new Credential();
+    if(userName && password && password === confirmPassword){
+      credential.credentialData.push(infoObject);
+      var localStorageData = gettingData("credential");
+      if(!localStorageData){
+        storingData('credential', credential.credentialData);
+      }else{
+        localStorageData.push(infoObject);
+        storingData('credential', localStorageData);
+      }
+      alert(`Congratulation '${userName}', Account got created`);
     }else{
-      localStorageData.push(infoObject);
-      storingData('credential', localStorageData);
-    }
-    alert(`Congratulation '${userName}', Account got created`);
-  }else{
-    alert('warning');
- }
+      alert('warning');
+   }
 
-})
+  })
 
-/*
-  On click login if credential match send it to home page
-*/
-$('.logIn').click(function(e){
-  e.preventDefault();
-  var userName = $('#usrName').val().trim();
-  var password = $('#password').val().trim();
-  if(userName && password){
-      var localstorageData = gettingData('credential');
-      localstorageData.reduce(function(arr,data,index){
-        if(userName == data.userName){
-          localstorageData.splice(index, 1);
-          storingData('credential',localstorageData);
-          alert('home');
-          }else{
-          alert(`credential not found Please signup`);
+  /*
+    On click login if credential match send it to home page
+  */
+  $('.logIn').click(function(e){
+    e.preventDefault();
+    var userName = $('#usrName').val().trim();
+    var password = $('#password').val().trim();
+    if(userName && password){
+        var localstorageData = gettingData('credential');
+        if(localstorageData.length > 0){
+          localstorageData.reduce(function(arr,data,index){
+            if(userName == data.userName){
+              localstorageData.splice(index, 1);
+              storingData('credential',localstorageData);
+              alert('home');
+              }else{
+              alert(`credential not found Please signup`);
+            }
+          },[])
+        }else{
+          alert('warning:please sign up');
         }
+      }
+    else{
+      alert('warning');
+    }
+
+  })
+  /*
+    home page
+  */
+  // $('.homePage').click(function(){
+  //
+  // })
+ $(function () {
+  var localStorageData = gettingData("movie");
+    if(localStorageData.length > 0){
+      localStorageData.reduce(function(arr,data,index){
+
+        $('.row').append('<div class="col-sm-4 moviesList">'+
+                          '<div class="thumbnail">'+
+                            '<img src="img/'+data.movie+'.jpg" class="responsive img-thumbnail" alt="'+data.movie+'">'+
+                            '<p class="posterName">'+data.movie+'</p>'+
+                            '<p class="lang">English</p>'+
+                          '</div>' +
+                          '<button class="book-movie">Book</button>' +
+                        '</div>');
       },[])
     }
-  else{
-    alert('warning');
-  }
-  
-})
+  }());
+
+
+  /*
+  on click book button show movie details
+  */
+  $('.book-movie').click(function(){
+    var movieName = $(this.parentElement).find('.posterName').text();
+    var localStorageData = gettingData("movie");
+      if(localStorageData.length > 0){
+        localStorageData.reduce(function(arr,data,index){
+          if(data.movie == movieName){
+            $('.jumbotron').css("background-image", "url(./img/"+data.movie+"Banner.jpg)")
+            $('.jumbotron').append('<h1 class="movieDetailTitle">'+data.movie+'</h1>');
+            $('.moviesList').addClass('hide');
+            $('.row').append('<div class="dateInfo">'+
+                            '<li class="liSelected">29   Tue</li>'+
+                            '<li>30   Wed</li>'+
+                            '<li>31   Thu</li>'+
+                          '</div>'+
+                        '<div class="movieInfo">'+
+                      '</div>');
+            /*
+            date on click
+            */
+            $('.dateInfo li').on('click',function (){
+              $('.dateInfo li').removeClass('liSelected');
+              $(this).addClass('liSelected');
+            })
+            data.movieDetails.forEach(function(detail){
+              $('.movieInfo').append(
+                              '<div class="col-sm-3 theaterName">'+
+                                '<p>'+detail.theaterName+'</p>'+
+                              '</div>'+
+                              '<div class="col-sm-9 movieTime">'+
+                            '</div>'+
+                          '<hr>');
+                  detail.timings.forEach(function(time){
+                    $('.movieTime').append( '<li>'+time+'</li>')
+                  })
+            })
+            /*
+            on click of timing will book movie and display seats
+            */
+            $('.movieTime li').on('click',function(){
+              $('.wrapper').append('<div class="notification seat hide">' +
+                                '<div class="notification-seat-wrapper">' +
+                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                  '<div class="screen col-sm-12">All Eyes This Way Please</div>' +
+                                '</div>' +
+                              '</div>')
+              $('.wrapper .notification').removeClass('hide');
+              $('.notification-seat-wrapper img').on('click', function(){
+                if($(this).attr("src") == "img/selectedSeat.png"){
+                    $(this).attr("src", "img/seat.png");
+                } else {
+                $(this).attr("src", "img/selectedSeat.png");
+                }
+              });
+            })
+          }
+      },[])
+    }
+  })
+
 
 
 
