@@ -8,7 +8,7 @@ $(document).ready(function() {
     setting heigth as per widow heigth
   */
   $('body').css('height' , $(window).innerHeight());
-  $('.wrapper').css('height' , $('body').height()- $('.jumbotron').innerHeight()-$('.app-logo').innerHeight());
+  $('.wrapper').css('min-height' , $('body').height()- $('.jumbotron').innerHeight()-$('.app-logo').innerHeight());
   $('.notification').css('height' ,$('.wrapper').height());
 
 
@@ -107,7 +107,7 @@ $(document).ready(function() {
         pageSelection('home');
       }
       $('.app-logo span').removeClass('hide');
-      $('.app-logo p').text(`Welcome ${currentUser}`);
+      $('.app-logo p strong').text(`${currentUser}`);
     }
   }
 
@@ -117,6 +117,7 @@ $(document).ready(function() {
   $('.app-logo img').click(function(){
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if(currentUser){
+      $('.row').children().remove();
       pageSelection('home');
     }
   })
@@ -217,18 +218,19 @@ $(document).ready(function() {
     check for dublicates
   */
   var checkDuplicates = function (objName, stringName){
+    var duplicates = false
     var localStorageData = gettingData(objName);
     if(localStorageData){
       localStorageData.forEach(function(storedData){
       if(objName== "movie" && storedData.movie == stringName){
-        return true;
+        duplicates = true;
       }
       if(objName== "credential" && storedData.userName == stringName){
-        return true;
+        duplicates = true;
       }
       })
     }
-    return false;
+    return duplicates;
   }
 
   /*
@@ -273,6 +275,18 @@ $(document).ready(function() {
                       '</div>'
                     );
   });
+  /*
+  on key down remove warning
+  */
+  $('.logInPageWrapper .form-group input').keydown(function(){
+    $('.alert-danger').addClass('hide');
+  })
+   /*
+  on focus empty value
+  */
+  $('.logInPageWrapper .form-group input').focus(function(){
+    $(this).val('');
+  })
 
   /*
     On click create an account button show signup page
@@ -283,6 +297,7 @@ $(document).ready(function() {
     $('.confirm-password').removeClass('hide');
     $('.login-btns').addClass('hide');
     $('input').val("");
+    $('.alert-danger').addClass('hide');
 
   })
 
@@ -322,17 +337,17 @@ $(document).ready(function() {
       if(userName == "adminERS"){
         pageSelection('admin');
         $('.app-logo span').removeClass('hide');
-        $('.app-logo span p').text(`Welcome ${userName}`);
+        $('.app-logo span p strong').text(`${userName}`);
         storingData('currentUser', userName);
       }else{
         pageSelection('home');
         $('.app-logo span').removeClass('hide');
-        $('.app-logo span p').text(`Welcome ${userName}`);
+        $('.app-logo span p strong').text(`${userName}`);
         storingData('currentUser', userName);
       }
 
     }else{
-      alert('Sorry something went wrong Please try again');
+      warning('Details are not correct, Please try again');
       refreshPage("signUp")
    }
 
@@ -343,34 +358,42 @@ $(document).ready(function() {
   */
   $('.logIn').click(function(e){
     e.preventDefault();
+    var incorrectInfo= true;
     var userName = $('#usrName').val().trim();
     var password = $('#password').val().trim();
-    if(userName && password && !checkDuplicates('credential',userName)){
+    if(userName && password){
         var localstorageData = gettingData('credential');
         if(localstorageData.length > 0){
           localstorageData.reduce(function(arr,data,index){
-            if("adminERS" == data.userName){
+            if("adminERS" == userName && password == data.password){
               pageSelection("admin");
               $('.app-logo span').removeClass('hide');
-              $('.app-logo span p').text(`Welcome ${userName}`);
+              $('.app-logo span p strong').text(`${userName}`);
               storingData('currentUser', userName);
+              incorrectInfo= false;
             }
-            else if(userName == data.userName){
+            else if(userName == data.userName && password == data.password){
               pageSelection("home");
               $('.app-logo span').removeClass('hide');
-              $('.app-logo span p').text(`Welcome ${userName}`);
+              $('.app-logo span p strong').text(`${userName}`);
               storingData('currentUser', userName);
+              incorrectInfo= false;
             }
           },[])
-        }else{
-          alert(`credential not found Please signup`);
         }
-      }
-    else{
-      alert('warning');
     }
-
+    if(incorrectInfo == true){
+      warning('Incorrect credential')
+    }
   })
+
+  /*
+    for diaplaying warning in login page
+  */
+  var warning = function(warningString){
+    $('.alert-danger').removeClass('hide');
+    $('.alert-danger strong').text(warningString);
+  }
   /*
     home page
   */
@@ -460,7 +483,59 @@ $(document).ready(function() {
       },[])
     }
   })
+  checkForCurrentUser();
+  //slider code start here
+  
+  $(function () {
+    var count = $("#slider > img").length
+    var slider = 1
+    var speed=5000
+    var fadeSpeed = 300
+    var loop 
+    start()
+    $("#1").fadeIn(fadeSpeed);
+    $('.right').click(right)
+    $('.left').click(left)
+    $('#slider').hover(stop,start)
+    
+    function start(){
+        loop = setInterval(next, speed)
+    }
+    function stop(){
+        clearInterval(loop)
+    }
+    function right() {
+        stop()
+        next()
+        start()
+        return false
+    }
 
+    function left() {
+        stop()
+        prev()
+        start()
+        return false
+    }
 
-checkForCurrentUser();
+    function prev() {
+        slider--
+        if (slider < 1) {
+            slider = count
+        }
+
+        $("#slider > img").fadeOut(fadeSpeed)
+        $("#" + slider).fadeIn(fadeSpeed)
+    }
+
+    function next() {
+        slider++
+        if (slider > count) {
+            slider = 1
+        }
+
+        $("#slider > img").fadeOut(fadeSpeed)
+        $("#" + slider).fadeIn(fadeSpeed)
+    }
+});
 });

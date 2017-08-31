@@ -13,11 +13,25 @@
   </head>
   <body>
     <div class='jumbotron'>
+    <!-- image slider code start -->
+    <div class="sliderWrapper">
+        <div id="slider">
+            <img id="1" alt="start" src="img/dunkirkBanner.jpg">
+            <img id="2" alt="1" src="img/hangoverBanner.jpg">
+            <img id="3" alt="2" src="img/titanicBanner.jpg">
+            <img id="4" alt="2" src="img/toystoryBanner.jpg">
+        </div>
+    </div>
+    <div id="nav">
+        <a href="#left" class="left btn btn-lg"><span class="glyphicon glyphicon-chevron-left"></span></a>
+        <a href="#right" class="right btn  btn-lg"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+    <!-- image slider code end -->
     </div>
     <div class="app-logo">
       <img src="img/logo.jpg" alt="Book My Show">
       <span class="hide">
-        <p >Welcome user</p>
+        <p >Welcome <strong> user</strong></p>
         <button type="button" class="btn btn-success logOut">LogOut</button>
       </span>
     </div>
@@ -26,6 +40,10 @@
         <!--Log in page start here-->
         <div class="logInPageWrapper">
          <p class="page-title">Login to Book My Show</p>
+         <div class="alert alert-danger alert-dismissable hide">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Incorrect password</strong>
+          </div>
           <div class="form-group">
              <input type="text" class="form-control" placeholder="User Name" id="usrName">
            </div>
@@ -55,7 +73,7 @@
         <div class="notification hide">
           <div class="notification-wrapper">
             <p></p>
-            <button type="ok" name="ok">Ok</button>
+            <button type="ok" class="btn btn-success" name="ok">Ok</button>
           </div>
         </div>
         <!--notification page start  -->
@@ -71,13 +89,17 @@
             </div>
             <div id="theater-timing">
             </div>
-            <button class="add-info">Add Information</button>
-            <button class="add-theater">Add Theater</button>
-            <button class="delete">Delete</button>
+            <button class="add-info btn btn-success">Add Information</button>
+            <button class="add-theater btn btn-success">Add Theater</button>
+            <button class="delete btn btn-danger">Delete</button>
           </form>
         </div>
         <!--admin page end  -->
       </div>
+    </div>
+    <div class="footer">
+      <p>Copyright 2017 © ERS Pvt. Ltd. All Rights Reserved.</p>
+      <p>The content and images used on this site are copyright protected and copyrights vests with the respective owners. </p>
     </div>
   </body>
 </html>
