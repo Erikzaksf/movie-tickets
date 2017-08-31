@@ -13,7 +13,14 @@ $(document).ready(function() {
 
 
 
-
+  /*
+    MovieSelectedSeat Info construtor
+  */
+  function MovieSelectedSeat (movieName,showTime){
+    this.movie = movieName;
+    this.seat = [];
+    this.timing= showTime;
+  }
 
 
   /*
@@ -211,7 +218,6 @@ $(document).ready(function() {
 
 
   });
-
 
 
   /*
@@ -416,6 +422,7 @@ $(document).ready(function() {
     on click book button show movie details
     */
     $('.moviesList .book-movie').on("click",function(){
+      var timingDetail;
       var seatSelection = 0;
       var movieName = $(this.parentElement).find('.posterName').text();
       var localStorageData = gettingData("movie");
@@ -449,25 +456,28 @@ $(document).ready(function() {
                                 '</div>'+
                                 '<hr>');
                   detail.timings.forEach(function(time){
-                    $(`.${detail.theaterName}`).append( '<li>'+time+'</li>')
+                    $(`.${detail.theaterName}`).append( '<li id="'+detail.theaterName+'">'+time+'</li>')
                   })
               })
               /*
               on click of timing will book movie and display seats
               */
               $('.movieTime li').on('click',function(){
+                var time = this.innerText;
+                var movieName = this.id;
+                timingDetail = new MovieSelectedSeat(movieName,time);
                 $('.wrapper').append('<div class="notification seat hide">' +
                                       '<div class="notification-seat-wrapper">' +
                                         '<div class="closeButton">'+
                                           '<span class="glyphicon glyphicon-remove"></span>'+
                                         '</div>'+
-                                        '<div class="settingChairWrapper">'+ 
+                                        '<div class="settingChairWrapper">'+
                                           '<div class = "seatingPrice">Gold Member: $12 per seat</div>' +
-                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                          '<i class="col-sm-6"><img src="img/seat.png"></i>' +
-                                          '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png" id="seat1"></i>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png" id="seat2"></i>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png" id="seat3"></i>' +
+                                          '<i class="col-sm-6"><img src="img/seat.png" id="seat4"></i>' +
+                                          '<i class="col-sm-6"><img src="img/seat.png" id="seat5"></i>' +
                                           '<div class="screen col-sm-12">All Eyes This Way Please</div>' +
                                         '</div>'+
                                         '<div class="col-sm-12 ProceedBtn hide">' +
@@ -483,6 +493,20 @@ $(document).ready(function() {
                                         '</div>'+
                                       '</div>' +
                                      '</div>')
+                  var checkingSelectdSeat = function(){
+                    var localStorageData = gettingData("selectedSeat");
+                    if(localStorageData && localStorageData != null){
+                      localStorageData.forEach(function(data){
+                        debugger;
+                        if(data.movie == movieName && data.timing == time){
+                          debugger
+                          $(`img#${data.seat}`).attr("src","img/selectedSeat.png");
+                        }
+                      })
+
+                    }
+                  }
+                  checkingSelectdSeat();
                   $('.wrapper .seat').removeClass('hide');
                   $('.notification-seat-wrapper img').on('click', function(){
                     if($(this).attr("src") == "img/selectedSeat.png"){
@@ -508,10 +532,26 @@ $(document).ready(function() {
                   })
                   $('.closeButton').on('click',function(){
                     $('.wrapper .seat').addClass('hide');
+                    seatSelection = 0;
                   })
                   $('.confirmCostBtn').on('click',function(){
+                    var $j_object=[];
                     $('.costCalculation').addClass('hide');
                     $('.ticketBooked').removeClass('hide');
+                    seats = $("img[src='img/selectedSeat.png']");
+                    for(index=0; index < seats.length; index++){
+                      timingDetail.seat.push(seats[index].id);
+                    }
+                    var localStorageData = gettingData("selectedSeat");
+                    if(!localStorageData || localStorageData == null){
+                      var arr = [];
+                      arr.push(timingDetail)
+                      storingData("selectedSeat", arr);
+                    }else{
+                      localStorageData.push(timingDetail);
+                      storingData("selectedSeat", localStorageData);
+                    }
+                    $("img[src='img/selectedSeat.png']").attr("src","img/seat.png" )
                   })
                   $('.confirmCostOk').on('click',function(){
                     $('.ticketBooked').addClass('hide');
@@ -532,22 +572,22 @@ $(document).ready(function() {
 
 
 
-  
+
   checkForCurrentUser();
   //slider code start here
-  
+
   $(function () {
     var count = $("#slider > img").length
     var slider = 1
     var speed=2000
     var fadeSpeed = 200
-    var loop 
+    var loop
     start()
     $("#1").fadeIn(fadeSpeed);
     $('.right').click(right)
     $('.left').click(left)
     $('#slider').hover(stop,start)
-    
+
     function start(){
         loop = setInterval(next, speed)
     }
