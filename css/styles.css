@@ -321,3 +321,13 @@ iframe{
   font-family: -webkit-pictograph;
   padding: 12% 10% 5% 12%;
 }
+video {
+  width: 100%
+}
+.videoIcon img{
+  height: 25%;
+  width: 30%;
+  position: absolute;
+  top: 26%;
+  left: 33%;
+}

@@ -13,6 +13,7 @@ $(document).ready(function() {
 
 
 
+
   /*
     MovieSelectedSeat Info construtor
   */
@@ -411,14 +412,46 @@ $(document).ready(function() {
 
           $('.row').append('<div class="col-sm-4 moviesList">'+
                             '<div class="thumbnail">'+
-                              '<img src="img/'+data.movie+'.jpg" class="responsive img-thumbnail" alt="'+data.movie+'">'+
+                              '<img src="img/'+data.movie+'.jpg" class="poster responsive img-thumbnail" alt="'+data.movie+'">'+
+                               '<video src="video/'+data.movie+'.mp4" class="responsive img-thumbnail hide trailer" controls autoplay>'+
+                               '</video>'+
+                               '<i class="videoIcon hide"><img src="img/videoPlay.png"></i>'+
                               '<p class="posterName">'+data.movie+'</p>'+
                               '<p class="lang">English</p>'+
                             '</div>' +
                             '<button class="book-movie">Book</button>' +
                           '</div>');
         },[])
+
+
       }
+      $('.thumbnail').mouseenter(function(){
+        if(!$(this).find('.poster').hasClass('hide')){
+          $(this).find('.videoIcon').removeClass('hide');
+        }
+
+      })
+      $('.thumbnail').mouseleave(function(){
+        if($(this).find('.poster').hasClass('hide')){
+          $(this).find('.poster').removeClass('hide');
+          $(this).find('.trailer').addClass('hide');
+        }
+          $(this).find('.videoIcon').addClass('hide');
+
+      })
+      $('.videoIcon').click(function(){
+          $('.trailer').css('height' , $('.poster').height());
+          $(this).parent().find('.poster').addClass('hide');
+          $(this).parent().find('.trailer').removeClass('hide');
+          $(this).addClass('hide')
+
+      });
+      // $('video .trailer').mouseleave(function(){
+      //   $(this).addClass('hide');
+      //   $(this).parent().find('.poster').removeClass('hide');
+      //   $(this).parent().find('.videoIcon').addClass('hide');
+      // })
+
       /*
     on click book button show movie details
     */
@@ -498,7 +531,6 @@ $(document).ready(function() {
                     var localStorageData = gettingData("selectedSeat");
                     if(localStorageData && localStorageData != null){
                       localStorageData.forEach(function(data){
-                        debugger;
                         if(data.movie == movieName && data.timing == time && data.theater == theaterName){
                           for(index=0; index < data.seat.length; index++){
                             $(`img#${data.seat[index]}`).attr("src","img/bookedseat.png");
@@ -515,8 +547,8 @@ $(document).ready(function() {
                         $(this).attr("src", "img/seat.png");
                         seatSelection -= 1
                         // $('.ProceedBtn').addClass('hide');
-                    } else if($(this).attr("src") == "img/selectedSeat.png") {
-                        $(this).attr("src", "img/seat.png");
+                    } else if($(this).attr("src") == "img/seat.png") {
+                        $(this).attr("src", "img/selectedSeat.png");
                         seatSelection += 1
                         // $('.ProceedBtn').removeClass('hide');
                     }
