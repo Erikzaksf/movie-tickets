@@ -8,7 +8,7 @@ $(document).ready(function() {
     setting heigth as per widow heigth
   */
   $('body').css('height' , $(window).innerHeight());
-  $('.wrapper').css('min-height' , $('body').height()- $('.jumbotron').innerHeight()-$('.app-logo').innerHeight());
+  $('.wrapper').css('min-height' , $('body').height()- $('.jumbotron').innerHeight());
   $('.notification').css('height' ,$('.wrapper').height());
 
 
@@ -412,85 +412,135 @@ $(document).ready(function() {
                           '</div>');
         },[])
       }
-  }
- // $(function () {
- //
- //  }());
-
-
-  /*
-  on click book button show movie details
-  */
-  $('.book-movie').click(function(){
-    var movieName = $(this.parentElement).find('.posterName').text();
-    var localStorageData = gettingData("movie");
-      if(localStorageData.length > 0){
-        localStorageData.reduce(function(arr,data,index){
-          if(data.movie == movieName){
-            $('.jumbotron').css("background-image", "url(./img/"+data.movie+"Banner.jpg)")
-            $('.jumbotron').append('<h1 class="movieDetailTitle">'+data.movie+'</h1>');
-            $('.moviesList').addClass('hide');
-            $('.row').append('<div class="dateInfo">'+
-                            '<li class="liSelected">29   Tue</li>'+
-                            '<li>30   Wed</li>'+
-                            '<li>31   Thu</li>'+
-                          '</div>'+
-                        '<div class="movieInfo">'+
-                      '</div>');
-            /*
-            date on click
-            */
-            $('.dateInfo li').on('click',function (){
-              $('.dateInfo li').removeClass('liSelected');
-              $(this).addClass('liSelected');
-            })
-            data.movieDetails.forEach(function(detail){
-              $('.movieInfo').append(
-                              '<div class="col-sm-3 theaterName">'+
-                                '<p>'+detail.theaterName+'</p>'+
-                              '</div>'+
-                              '<div class="col-sm-9 movieTime">'+
+      /*
+    on click book button show movie details
+    */
+    $('.moviesList .book-movie').on("click",function(){
+      var seatSelection = 0;
+      var movieName = $(this.parentElement).find('.posterName').text();
+      var localStorageData = gettingData("movie");
+        if(localStorageData.length > 0){
+          localStorageData.reduce(function(arr,data,index){
+            if(data.movie == movieName){
+              $('.jumbotron').css("background-image", "url(./img/"+data.movie+"Banner.jpg)")
+              $('.jumbotron .movieDetailTitle').text(data.movie);
+              $('.moviesList').addClass('hide');
+              $('.bannerSlider').addClass('hide');
+              $('.row').append('<div class="dateInfo">'+
+                              '<li class="liSelected">29   Tue</li>'+
+                              '<li>30   Wed</li>'+
+                              '<li>31   Thu</li>'+
                             '</div>'+
-                          '<hr>');
+                          '<div class="movieInfo">'+
+                        '</div>');
+              /*
+              date on click
+              */
+              $('.dateInfo li').on('click',function (){
+                $('.dateInfo li').removeClass('liSelected');
+                $(this).addClass('liSelected');
+              })
+              data.movieDetails.forEach(function(detail){
+                $('.movieInfo').append(
+                                '<div class="col-sm-3 theaterName">'+
+                                  '<p>'+detail.theaterName+'</p>'+
+                                '</div>'+
+                                '<div class="col-sm-9 movieTime '+detail.theaterName+'">'+
+                                '</div>'+
+                                '<hr>');
                   detail.timings.forEach(function(time){
-                    $('.movieTime').append( '<li>'+time+'</li>')
+                    $(`.${detail.theaterName}`).append( '<li>'+time+'</li>')
                   })
-            })
-            /*
-            on click of timing will book movie and display seats
-            */
-            $('.movieTime li').on('click',function(){
-              $('.wrapper').append('<div class="notification seat hide">' +
-                                '<div class="notification-seat-wrapper">' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-4"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
-                                  '<i class="col-sm-6"><img src="img/seat.png"></i>' +
-                                  '<div class="screen col-sm-12">All Eyes This Way Please</div>' +
-                                '</div>' +
-                              '</div>')
-              $('.wrapper .notification').removeClass('hide');
-              $('.notification-seat-wrapper img').on('click', function(){
-                if($(this).attr("src") == "img/selectedSeat.png"){
-                    $(this).attr("src", "img/seat.png");
-                } else {
-                $(this).attr("src", "img/selectedSeat.png");
-                }
-              });
-            })
-          }
-      },[])
-    }
-  })
+              })
+              /*
+              on click of timing will book movie and display seats
+              */
+              $('.movieTime li').on('click',function(){
+                $('.wrapper').append('<div class="notification seat hide">' +
+                                      '<div class="notification-seat-wrapper">' +
+                                        '<div class="closeButton">'+
+                                          '<span class="glyphicon glyphicon-remove"></span>'+
+                                        '</div>'+
+                                        '<div class="settingChairWrapper">'+ 
+                                          '<div class = "seatingPrice">Gold Member: $12 per seat</div>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                          '<i class="col-sm-4"><img src="img/seat.png"></i>' +
+                                          '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                          '<i class="col-sm-6"><img src="img/seat.png"></i>' +
+                                          '<div class="screen col-sm-12">All Eyes This Way Please</div>' +
+                                        '</div>'+
+                                        '<div class="col-sm-12 ProceedBtn hide">' +
+                                          '<button class="selectProceed btn btn-success">Proceed</button>' +
+                                        '</div>' +
+                                        '<div class="costCalculation hide">'+
+                                          '<div class="totalCost-wrapper"></div>' +
+                                          '<button class="confirmCostBtn btn btn-success">Confirm</button>' +
+                                        '</div>'+
+                                        '<div class="ticketBooked hide">'+
+                                          '<div class="congrats">Congratulation. Your ticket(s) have been processed. Thank you for your purchase.</div>' +
+                                          '<button class="confirmCostOk btn btn-success">Ok</button>' +
+                                        '</div>'+
+                                      '</div>' +
+                                     '</div>')
+                  $('.wrapper .seat').removeClass('hide');
+                  $('.notification-seat-wrapper img').on('click', function(){
+                    if($(this).attr("src") == "img/selectedSeat.png"){
+                        $(this).attr("src", "img/seat.png");
+                        seatSelection -= 1
+                        // $('.ProceedBtn').addClass('hide');
+                    } else {
+                        $(this).attr("src", "img/selectedSeat.png");
+                        seatSelection += 1
+                        // $('.ProceedBtn').removeClass('hide');
+                    }
+                    if(seatSelection > 0){
+                      $('.ProceedBtn').removeClass('hide');
+                    }else{
+                      $('.ProceedBtn').addClass('hide');
+                    }
+                  });
+                  $('.ProceedBtn').on('click', function(){
+                    $('.costCalculation').removeClass('hide');
+                    $('.ProceedBtn').addClass('hide');
+                    $('.settingChairWrapper').addClass('hide');
+                    $('.totalCost-wrapper').text(`Total Tickest price is: $ ${seatSelection*12}`)
+                  })
+                  $('.closeButton').on('click',function(){
+                    $('.wrapper .seat').addClass('hide');
+                  })
+                  $('.confirmCostBtn').on('click',function(){
+                    $('.costCalculation').addClass('hide');
+                    $('.ticketBooked').removeClass('hide');
+                  })
+                  $('.confirmCostOk').on('click',function(){
+                    $('.ticketBooked').addClass('hide');
+                    $('.seat').addClass('hide');
+                    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    if(currentUser){
+                      $('.row').children().remove();
+                      pageSelection('home');
+                    }
+                  })
+                })
+
+            }
+        },[])
+      }
+    })
+  }
+
+
+
+  
   checkForCurrentUser();
   //slider code start here
   
   $(function () {
     var count = $("#slider > img").length
     var slider = 1
-    var speed=5000
-    var fadeSpeed = 300
+    var speed=2000
+    var fadeSpeed = 200
     var loop 
     start()
     $("#1").fadeIn(fadeSpeed);

@@ -222,10 +222,12 @@ hr {
   background: #fff;
   border: 3px solid #20aab1;
   border-radius: 1rem;
-  padding: 10rem;
+  padding: 2% 0;
   text-align: center;
 }
-
+.seatingPrice {
+  padding-bottom: 5%;
+}
 .notification-seat-wrapper i img{
   width: 7rem;
   text-align: center;
@@ -235,7 +237,7 @@ hr {
 .screen {
   margin-top: 5%;
   width: 60%;
-  height: 10%;
+  height: 3rem;
   line-height: 26px;
   margin-left: 20%;
   background-color: #20aab1;
@@ -298,4 +300,24 @@ iframe{
 }
 .footer p{
   margin: 0;
+}
+.closeButton{
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  height: 20px;
+  width: 20px;
+  background: #dedede;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+.ProceedBtn{
+  margin-top: 1%;
+}
+.totalCost-wrapper, .congrats{
+  font-size: 2rem;
+  font-weight: bold;
+  color: #545454;
+  font-family: -webkit-pictograph;
+  padding: 12% 10% 5% 12%;
 }
