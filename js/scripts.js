@@ -1,27 +1,21 @@
 $(document).ready(function() {
-  /*
 
-  */
-  // $.ajax({
-  //      url: 'logIn.html',
-  //      type: 'GET',
-  //      dataType: 'html',
-  //      success: function(data){
-  //        $('.container').html(data);
-  //      }
-  //  });
-  //$(".container").load("logIn.html .logInPageWrapper");
-  /*
-    Declaring variable
-  */
-  //localStorage.clear();
+
+
+  //var imgName = ['dunkirk', 'hangover', 'spiderman', 'toystory', 'titanic', 'xmen'];
   var bannerArray =['dunkirkBanner', 'hangoverBanner', 'titanicBanner','toyStoryBanner'];
   /*
     setting heigth as per widow heigth
   */
   $('body').css('height' , $(window).innerHeight());
-  $('.wrapper').css('height' , $('body').height()- $('.jumbotron').innerHeight());
+  $('.wrapper').css('height' , $('body').height()- $('.jumbotron').innerHeight()-$('.app-logo').innerHeight());
   $('.notification').css('height' ,$('.wrapper').height());
+
+
+
+
+
+
   /*
     MovieInfo construtor
   */
@@ -49,8 +43,20 @@ $(document).ready(function() {
     Function for getting local storage data
   */
   var gettingData = function(name){
-    console.log(JSON.parse(localStorage.getItem(name)));
     return JSON.parse(localStorage.getItem(name))
+  }
+
+
+  /*
+    Function will refresh given page
+  */
+  var refreshPage= function(pageName){
+    if(pageName == "admin"){
+      $('.adminInfo input').val("");
+      $(".theater-form").remove();
+    }else if(pageName == "signUp"){
+      $('.logInPageWrapper input').val("");
+    }
   }
   /*
     userCredential construtor
@@ -76,10 +82,58 @@ $(document).ready(function() {
     $('.notification').removeClass('hide');
   }
 
+  /*
+    It will select the page you want to be in
+  */
+  var pageSelection = function(pageName){
+    $('.container').children().addClass('hide');
+    if(pageName == 'home'){
+      $('.container .row').removeClass('hide');
+      homePageData();
+    }else if(pageName == 'admin'){
+      $('.adminInfo').removeClass('hide');
+    }
+  }
+
+  /*
+    checking for current user
+  */
+  var checkForCurrentUser = function(){
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(currentUser){
+      if(currentUser === "adminERS"){
+        pageSelection('admin');
+      }else{
+        pageSelection('home');
+      }
+      $('.app-logo span').removeClass('hide');
+      $('.app-logo p').text(`Welcome ${currentUser}`);
+    }
+  }
+
+  /*
+    home page link
+  */
+  $('.app-logo img').click(function(){
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(currentUser){
+      pageSelection('home');
+    }
+  })
+
   $('.notification-wrapper button').click(function() {
     $('.notification').addClass('hide');
-    location.reload();
+
   });
+
+  /*
+    On click signout remove user name
+  */
+  $('.logOut').click(function(){
+    localStorage.removeItem('currentUser');
+    location.reload();
+  })
+
 
   /*
     On click delete button delete the movie from
@@ -87,6 +141,7 @@ $(document).ready(function() {
   */
   $('.delete').click(function(e) {
     e.preventDefault();
+    var deleteData = false;
     var movieName = $('#movie-info').val();
     if(movieName){
       var localstorageData = gettingData('movie');
@@ -95,10 +150,13 @@ $(document).ready(function() {
           localstorageData.splice(index, 1);
           storingData('movie',localstorageData);
           notification(`Movie name '${movieName}' got deleted`);
-        }else{
-          notification(`Movie name '${movieName}' is not found`);
+          deleteData = true;
         }
       },[])
+      if(deleteData == false){
+        notification(`Movie name '${movieName}' is not found`);
+      }
+      refreshPage("admin");
     }
   })
   /*
@@ -117,14 +175,16 @@ $(document).ready(function() {
 
   /*
     On add information button in admin page
-    save all data in object
+    save all data in object and before saving
+    check localstorage for duplicates
   */
   $(".add-info").click(function(e){
     e.preventDefault();
     var movieName = $('#movie-info').val();
     var MovieDetail = new MovieInfo (movieName);
     var movieObject = []
-      $('.theater-form').each(function() {
+    if(!checkDuplicates("movie", movieName)){
+        $('.theater-form').each(function() {
         var timingArray =[];
         var theaterName;
         theaterName = $(this).find('#theater').val();
@@ -143,15 +203,33 @@ $(document).ready(function() {
         storingData("movie", localStorageData);
       }
       notification(`Movie name '${movieName}' got added`);
+    }else{
+      notification(`Movie name '${movieName}' already exist`);
+    }
+      refreshPage("admin");
+
+
   });
 
 
 
   /*
-    tigger click on div with class 'add-theater'
-   in admin page for loading theater name and timing
+    check for dublicates
   */
-  //$(".add-theater").trigger('click');
+  var checkDuplicates = function (objName, stringName){
+    var localStorageData = gettingData(objName);
+    if(localStorageData){
+      localStorageData.forEach(function(storedData){
+      if(objName== "movie" && storedData.movie == stringName){
+        return true;
+      }
+      if(objName== "credential" && storedData.userName == stringName){
+        return true;
+      }
+      })
+    }
+    return false;
+  }
 
   /*
     Add theater name and timing in div with
@@ -231,7 +309,7 @@ $(document).ready(function() {
     var confirmPassword = $('#confirm-password').val().trim();
     var infoObject = new CredentialInfo(userName, confirmPassword);
     var credential = new Credential();
-    if(userName && password && password === confirmPassword){
+    if(userName && password && password === confirmPassword && !checkDuplicates('credential',userName)){
       credential.credentialData.push(infoObject);
       var localStorageData = gettingData("credential");
       if(!localStorageData){
@@ -240,9 +318,22 @@ $(document).ready(function() {
         localStorageData.push(infoObject);
         storingData('credential', localStorageData);
       }
-      alert(`Congratulation '${userName}', Account got created`);
+      refreshPage("signUp");
+      if(userName == "adminERS"){
+        pageSelection('admin');
+        $('.app-logo span').removeClass('hide');
+        $('.app-logo span p').text(`Welcome ${userName}`);
+        storingData('currentUser', userName);
+      }else{
+        pageSelection('home');
+        $('.app-logo span').removeClass('hide');
+        $('.app-logo span p').text(`Welcome ${userName}`);
+        storingData('currentUser', userName);
+      }
+
     }else{
-      alert('warning');
+      alert('Sorry something went wrong Please try again');
+      refreshPage("signUp")
    }
 
   })
@@ -254,20 +345,25 @@ $(document).ready(function() {
     e.preventDefault();
     var userName = $('#usrName').val().trim();
     var password = $('#password').val().trim();
-    if(userName && password){
+    if(userName && password && !checkDuplicates('credential',userName)){
         var localstorageData = gettingData('credential');
         if(localstorageData.length > 0){
           localstorageData.reduce(function(arr,data,index){
-            if(userName == data.userName){
-              localstorageData.splice(index, 1);
-              storingData('credential',localstorageData);
-              alert('home');
-              }else{
-              alert(`credential not found Please signup`);
+            if("adminERS" == data.userName){
+              pageSelection("admin");
+              $('.app-logo span').removeClass('hide');
+              $('.app-logo span p').text(`Welcome ${userName}`);
+              storingData('currentUser', userName);
+            }
+            else if(userName == data.userName){
+              pageSelection("home");
+              $('.app-logo span').removeClass('hide');
+              $('.app-logo span p').text(`Welcome ${userName}`);
+              storingData('currentUser', userName);
             }
           },[])
         }else{
-          alert('warning:please sign up');
+          alert(`credential not found Please signup`);
         }
       }
     else{
@@ -278,25 +374,25 @@ $(document).ready(function() {
   /*
     home page
   */
-  // $('.homePage').click(function(){
-  //
-  // })
- $(function () {
-  var localStorageData = gettingData("movie");
-    if(localStorageData.length > 0){
-      localStorageData.reduce(function(arr,data,index){
+  var homePageData = function(){
+    var localStorageData = gettingData("movie");
+      if(localStorageData.length > 0){
+        localStorageData.reduce(function(arr,data,index){
 
-        $('.row').append('<div class="col-sm-4 moviesList">'+
-                          '<div class="thumbnail">'+
-                            '<img src="img/'+data.movie+'.jpg" class="responsive img-thumbnail" alt="'+data.movie+'">'+
-                            '<p class="posterName">'+data.movie+'</p>'+
-                            '<p class="lang">English</p>'+
-                          '</div>' +
-                          '<button class="book-movie">Book</button>' +
-                        '</div>');
-      },[])
-    }
-  }());
+          $('.row').append('<div class="col-sm-4 moviesList">'+
+                            '<div class="thumbnail">'+
+                              '<img src="img/'+data.movie+'.jpg" class="responsive img-thumbnail" alt="'+data.movie+'">'+
+                              '<p class="posterName">'+data.movie+'</p>'+
+                              '<p class="lang">English</p>'+
+                            '</div>' +
+                            '<button class="book-movie">Book</button>' +
+                          '</div>');
+        },[])
+      }
+  }
+ // $(function () {
+ //
+ //  }());
 
 
   /*
@@ -366,6 +462,5 @@ $(document).ready(function() {
   })
 
 
-
-
+checkForCurrentUser();
 });

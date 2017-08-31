@@ -239,3 +239,21 @@ hr {
   background-color: #20aab1;
   color: white;
 }
+iframe{
+  width:100%;
+  overflow: hidden;
+  height: 851.891px;
+  border: none;
+}
+.app-logo span{
+  float: right;
+  padding: 0 1rem;
+}
+.app-logo p{
+  font-size: 16px;
+  padding: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  font-variant: all-small-caps;
+  display: inline-block;
+}
