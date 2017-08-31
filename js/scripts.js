@@ -497,10 +497,8 @@ $(document).ready(function() {
                     var localStorageData = gettingData("selectedSeat");
                     if(localStorageData && localStorageData != null){
                       localStorageData.forEach(function(data){
-                        debugger;
                         if(data.movie == movieName && data.timing == time){
-                          debugger
-                          $(`img#${data.seat}`).attr("src","img/selectedSeat.png");
+                          $(`img#${data.seat}`).attr("src","img/bookedseat.png");
                         }
                       })
 
