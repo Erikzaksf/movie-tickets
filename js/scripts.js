@@ -16,8 +16,9 @@ $(document).ready(function() {
   /*
     MovieSelectedSeat Info construtor
   */
-  function MovieSelectedSeat (movieName,showTime){
+  function MovieSelectedSeat (movieName,theaterName,showTime){
     this.movie = movieName;
+    this.theater = theaterName;
     this.seat = [];
     this.timing= showTime;
   }
@@ -464,8 +465,8 @@ $(document).ready(function() {
               */
               $('.movieTime li').on('click',function(){
                 var time = this.innerText;
-                var movieName = this.id;
-                timingDetail = new MovieSelectedSeat(movieName,time);
+                var theaterName = this.id;
+                timingDetail = new MovieSelectedSeat(movieName,theaterName,time);
                 $('.wrapper').append('<div class="notification seat hide">' +
                                       '<div class="notification-seat-wrapper">' +
                                         '<div class="closeButton">'+
@@ -497,8 +498,11 @@ $(document).ready(function() {
                     var localStorageData = gettingData("selectedSeat");
                     if(localStorageData && localStorageData != null){
                       localStorageData.forEach(function(data){
-                        if(data.movie == movieName && data.timing == time){
-                          $(`img#${data.seat}`).attr("src","img/bookedseat.png");
+                        debugger;
+                        if(data.movie == movieName && data.timing == time && data.theater == theaterName){
+                          for(index=0; index < data.seat.length; index++){
+                            $(`img#${data.seat[index]}`).attr("src","img/bookedseat.png");
+                          }
                         }
                       })
 
@@ -511,8 +515,8 @@ $(document).ready(function() {
                         $(this).attr("src", "img/seat.png");
                         seatSelection -= 1
                         // $('.ProceedBtn').addClass('hide');
-                    } else {
-                        $(this).attr("src", "img/selectedSeat.png");
+                    } else if($(this).attr("src") == "img/selectedSeat.png") {
+                        $(this).attr("src", "img/seat.png");
                         seatSelection += 1
                         // $('.ProceedBtn').removeClass('hide');
                     }
